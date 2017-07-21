@@ -9,8 +9,21 @@ import numpy as np
 import pandas as pd
 import itertools
 import os
+import sys
 
 os.chdir("C:/Users/whuang67/downloads")
+document = open('kdd15-p9.txt')
+data = document.readlines()
+paper = ['kdd15-p9']
+author = data[0].strip().split('\t')
+problem = data[1].strip().split('\t')
+metric = data[2].strip().split('\t')
+dataset = data[3].strip().split('\t')
+method = data[4].strip().split('\t')
+
+cub = pd.DataFrame(list(itertools.product(paper, author, problem, metric, dataset, method)),
+                   columns = ['paper', 'author', 'problem', 'metric', 'dataset', 'method'])
+
 for i in range(0, 15):
     if i == 0:
         a = "kdd15-p9"

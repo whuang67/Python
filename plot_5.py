@@ -7,8 +7,9 @@ Created on Fri Oct 13 09:31:13 2017
 
 import matplotlib.pyplot as plt
 import numpy as np
+import scipy.stats as ss
 
-
+### This function can be replaced by ss.norm.pdf()
 def Norm_Density(x, mean=0., std=1.):
     return 1./(2*np.pi*std**2)**.5 * np.exp(-(x-mean)**2/(2*std**2))
 
@@ -38,11 +39,13 @@ visualization(start = -0.5, end = 0.5) ### d
 # 3.10
 visualization(mean = 55, std = 6, end = 48) ### a
 visualization(mean = 55, std = 6, start = 60, end = 65) ### b
-
+visualization(mean = 55, std = 6,
+              start = ss.norm.ppf(1-0.1, 55, 6)) ### c
 visualization(mean = 55, std = 6, end = 54) ### d
 
 # 3.12
 visualization(mean = 72.6, std = 4.78, end = 80) ### a
 visualization(mean = 72.6, std = 4.78, start = 60, end = 80) ### b
-
+visualization(mean = 72.6, std = 4.78,
+              start = ss.norm.ppf(1-0.05, 72.6, 4.78)) ### c
 visualization(mean = 72.6, std = 4.78, start = 70) ### d

@@ -8,7 +8,7 @@ Created on Fri Oct 13 22:10:22 2017
 import numpy as np
 
 class LinearRegression():
-    def __init__(self, step=10, learning_rate=.01):
+    def __init__(self, step=1000, learning_rate=.01):
         self.step = step
         self.learning_rate = learning_rate
     
@@ -23,7 +23,9 @@ class LinearRegression():
 
         self.w = np.ones(self.X.shape[1])
         for _ in range(self.step):
-            y_pred = np.matmul(self.X, self.w)
+            y_pred = np.where(np.matmul(self.X, self.w) > 0,
+                              np.ones(self.X.shape[0]),
+                              np.zeros(self.X.shape[0]))
             self.w += self.learning_rate * np.matmul(self.X.T, self.y-y_pred)
             print(self.w)
     
@@ -32,12 +34,16 @@ class LinearRegression():
             if test_data is None:
                 test_data = self.X
         
-            return np.matmul(test_data, self.w)
+            output = np.matmul(test_data, self.w)
+            return np.where(output > 0,
+                            np.ones(test_data.shape[0]),
+                            np.zeros(test_data.shape[0]))
+            
         except AttributeError:
             print("Please fit first!")
 
-
-
+def get_accuracy(y, y_pred):
+    return np.mean(y == y_pred)
 
 if __name__ == "__main__":
     np.random.seed(1)
@@ -48,6 +54,10 @@ if __name__ == "__main__":
     Y = np.matmul(X, beta.T) + np.random.normal(size = N)
     Y_ = np.where(Y > 0, np.ones(N), np.zeros(N))
     
+    ## Model fitting
     model = LinearRegression()
-    model.fit(X, Y)
+    model.fit(X, Y_)
+    Y_pred = model.predict()
+    print(model.w)
+    print(get_accuracy(Y_, Y_pred))
     print(model.w)

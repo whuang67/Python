@@ -16,7 +16,7 @@ def log_likelihood(feature, target, weights):
 
 
 class LogisticRegression():
-    def __init__(self, X, y, step=1000, learning_rate=.01, intercept=True):
+    def __init__(self, X, y, step=3000, learning_rate=.01, intercept=True):
         self.intercept = intercept
         if self.intercept:
             self.X = np.hstack((np.ones((X.shape[0], 0)), X))
@@ -36,9 +36,9 @@ class LogisticRegression():
                               np.zeros(self.X.shape[0]))
             
             exp = np.exp(-np.dot(self.y, y_pred))
-            gradient = exp/(1+exp) * np.matmul(self.X.T, self.y)
+            gradient = -exp/(1+exp) * np.matmul(self.X.T, self.y)
             # self.w += self.learning_rate * np.matmul(self.X.T, self.y-y_pred)
-            self.w += self.learning_rate * gradient
+            self.w -= self.learning_rate * gradient
         # return self.w
     
     def predict(self, test_data = None, output = "label", cutoff = .5):

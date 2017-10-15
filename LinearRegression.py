@@ -26,8 +26,8 @@ class LinearRegression():
             y_pred = np.where(np.matmul(self.X, self.w) > 0,
                               np.ones(self.X.shape[0]),
                               np.zeros(self.X.shape[0]))
-            
-            gradient = -(self.X.shape[0]-np.dot(self.y, y_pred)) * np.matmul(self.X.T, self.y)
+            gradient = - np.matmul(self.X.T, self.y - y_pred)
+            # gradient = -(self.X.shape[0]-np.dot(self.y, y_pred)) * np.matmul(self.X.T, self.y)
             self.w -= self.learning_rate * gradient
             print(self.w)
     

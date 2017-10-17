@@ -28,15 +28,32 @@ class Linear_Regression():
         self.sigma_betas = np.diag(np.linalg.inv(np.matmul(self.X.T, self.X))*self.sigma_squared)**.5
 
 
-    def predict(self, test_data = None, interval = None):
+    def predict(self, test_data = None, interval = None, alpha = .05):
         if test_data is None:
             test_data = self.X
         elif self.intercept:
             test_data = np.hstack((np.ones((test_data.shape[0], 1)), test_data))
         
         fit = np.matmul(test_data, self.w)
-        if interval is None:
+            
+        if interval =="confidence":
+            cri_val = ss.t.ppf(1-alpha/2., self.degrees_of_freedom)
+            margin = np.diag(np.matmul(np.matmul(test_data, np.linalg.inv(np.matmul(self.X.T, self.X))), test_data.T)*self.sigma_squared)**.5
+            lower_ = fit - cri_val * margin
+            upper_ = fit + cri_val * margin
+            return np.vstack((lower_, fit, upper_)).T
+            # return lower_
+        
+        elif interval == "prediction":
+            cri_val = ss.t.ppf(1-alpha/2., self.degrees_of_freedom)
+            margin = np.diag((np.matmul(np.matmul(test_data, np.linalg.inv(np.matmul(self.X.T, self.X))), test_data.T) + 1)*self.sigma_squared)**.5
+            lower_ = fit - cri_val * margin
+            upper_ = fit + cri_val * margin
+            return np.vstack((lower_, fit, upper_)).T
+        else:
             return fit
+
+            
 
 
     def summary(self):
@@ -108,6 +125,7 @@ def dignostics_plot(model):
     plt.show()
 
 
+## Examples
 
 if __name__ == "__main__":
     
@@ -154,7 +172,7 @@ if __name__ == "__main__":
     import os
     os.chdir("C:/users/whuang67/downloads")
     savings = pd.read_csv("savings.csv")
-    X_full = savings[["pop15", "pop75", "dpi", "ddpi"]]
+    X_full = savings[["pop15", "pop75", "dpi", "ddpi"]].values
     X_reduced = savings[["dpi", "ddpi"]].values
     y = savings["sr"].values
     model_full = Linear_Regression(X_full, y)
@@ -164,7 +182,15 @@ if __name__ == "__main__":
     print(ANOVA(model_reduced, model_full))
     
     print(confidence_interval(model_full))
-    # Not finished
+    
+    
+    
+    test_data = np.array([[35.0896, 2.293, 1106.758, 3.7576],
+                          [30.0896, 2.293, 1106.758, 3.7576]])
+    print(model_full.predict(test_data = test_data,
+                             interval = "confidence"))
+    print(model_full.predict(test_data = test_data,
+                             interval = "prediction"))
     
     
     ## Chapter 4
@@ -172,3 +198,13 @@ if __name__ == "__main__":
     
     
     ## Chapter 5
+    
+    ## Chapter 6
+    mammals = pd.read_csv("mammals.csv")
+    X = mammals[["body"]].values; y = mammals["brain"].values
+    model_51 = Linear_Regression(X, y)
+    dignostics_plot(model_51)
+    
+    model_52 = Linear_Regression(np.log(X), np.log(y))
+    print(model_52.summary())
+    dignostics_plot(model_52)

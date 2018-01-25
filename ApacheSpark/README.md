@@ -30,3 +30,15 @@ sudo chmod 777 python
 cd python
 sudo chmod 777 pyspark
 ```
+
+Install module findspark
+
+```bash
+pip3 install findspark
+```
+
+```python```
+import findspark
+findspark.init('/home/mint/spark-2.1.0-bin-hadoop2.7')
+import pyspark
+```

@@ -37,7 +37,7 @@ Install module findspark
 pip3 install findspark
 ```
 
-```python```
+```python
 import findspark
 findspark.init('/home/mint/spark-2.1.0-bin-hadoop2.7')
 import pyspark
